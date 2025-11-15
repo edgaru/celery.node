@@ -8,7 +8,7 @@ export default class Task {
   /**
    * Asynchronous Task
    * @constructor Task
-   * @param {Client} clinet celery client instance
+   * @param {Client} client celery client instance
    * @param {string} name celery task name
    */
   constructor(client: Client, name: string) {
@@ -28,15 +28,31 @@ export default class Task {
     return this.applyAsync([...args]);
   }
 
-  public applyAsync(args: Array<any>, kwargs?: object): AsyncResult {
+  /**
+   * Apply task asynchronously
+   * @param {Array<any>} args - Task arguments
+   * @param {object} kwargs - Task keyword arguments
+   * @param {object} options - Execution options (queue, etc.)
+   * @returns {AsyncResult}
+   */
+  public applyAsync(
+    args: Array<any>, 
+    kwargs?: object, 
+    options?: { queue?: string }  // ✅ Agregar parámetro options
+  ): AsyncResult {
     if (args && !Array.isArray(args)) {
       throw new Error("args is not array");
     }
-
     if (kwargs && typeof kwargs !== "object") {
       throw new Error("kwargs is not object");
     }
 
-    return this.client.sendTask(this.name, args || [], kwargs || {});
+    return this.client.sendTask(
+      this.name, 
+      args || [], 
+      kwargs || {}, 
+      undefined,     // taskId - deja que se genere automáticamente
+      options        // ✅ Pasar options con queue
+    );
   }
 }
