@@ -10,11 +10,12 @@
     "format-check": "prettier --check \"{,!(node_modules)/**/}*.{js,ts}\"",
     "dist": "tsc",
     "test": "mocha -r ts-node/register ./test/**/*",
-    "prepublishOnly": "npm run dist & npm test"
+    "prepare": "npm run dist",
+    "prepublishOnly": "npm run dist && npm test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actumn/celery.node.git"
+    "url": "git+https://github.com/edgaru/celery.node.git"
   },
   "keywords": [
     "node-celery",
@@ -30,9 +31,9 @@
   "author": "actumn814@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/actumn/celery.node/issues"
+    "url": "https://github.com/edgaru/celery.node/issues"
   },
-  "homepage": "https://github.com/actumn/celery.node#readme",
+  "homepage": "https://github.com/edgaru/celery.node#readme",
   "devDependencies": {
     "@types/amqplib": "^0.5.17",
     "@types/chai": "^4.2.9",
