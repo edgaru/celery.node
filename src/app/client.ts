@@ -22,18 +22,19 @@ export default class Client extends Base {
     return this.taskProtocols[this.conf.TASK_PROTOCOL];
   }
 
-  public sendTaskMessage(taskName: string, message: TaskMessage): void {
+  public sendTaskMessage(taskName: string, message: TaskMessage, queue?: string): void {
     const { headers, properties, body /*, sentEvent */ } = message;
 
     const exchange = "";
     // exchangeType = 'direct';
     // const serializer = 'json';
-
+    const queueName = queue || this.conf.CELERY_QUEUE;
+    
     this.isReady().then(() =>
       this.broker.publish(
         body,
         exchange,
-        this.conf.CELERY_QUEUE,
+        queueName,
         headers,
         properties
       )
@@ -136,12 +137,12 @@ export default class Client extends Base {
     taskName: string,
     args?: Array<any>,
     kwargs?: object,
-    taskId?: string
+    taskId?: string,
+    options?: { queue?: string }
   ): AsyncResult {
     taskId = taskId || v4();
-    const message = this.createTaskMessage(taskId, taskName, args, kwargs);
-    this.sendTaskMessage(taskName, message);
-
+    const message = this.createTaskMessage(taskId, taskName, args, kwargs);  // ✅ Pasar args y kwargs
+    this.sendTaskMessage(taskName, message, options?.queue);  // ✅ Pasar queue aquí
     const result = new AsyncResult(taskId, this.backend);
     return result;
   }
